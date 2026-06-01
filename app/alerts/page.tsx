@@ -2,7 +2,6 @@
 
 import { useAirQuality } from '@/context/AirQualityContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { Header } from '@/components/Header';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Bell, AlertTriangle, CheckCircle2 } from 'lucide-react';
@@ -26,9 +25,7 @@ export default function AlertsPage() {
   };
 
   return (
-    <>
-      <Header />
-      <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">{t.alerts.title}</h1>
@@ -132,7 +129,6 @@ export default function AlertsPage() {
             </div>
           )}
         </div>
-      </main>
-    </>
+    </main>
   );
 }

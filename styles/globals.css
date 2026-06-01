@@ -3,6 +3,25 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Custom design tokens */
+:root {
+  --page-bg: #f0f2f7;
+  --sidebar-bg: #ffffff;
+  --card-bg: #ffffff;
+  --card-border: rgba(0,0,0,0.07);
+  --text-primary: #0f1117;
+  --text-secondary: #6b7280;
+}
+
+.dark {
+  --page-bg: #07080f;
+  --sidebar-bg: #0d0f1a;
+  --card-bg: rgba(255,255,255,0.04);
+  --card-border: rgba(255,255,255,0.07);
+  --text-primary: #f1f5f9;
+  --text-secondary: #64748b;
+}
+
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);

@@ -3,7 +3,6 @@
 import dynamic from 'next/dynamic';
 import { useAirQuality } from '@/context/AirQualityContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { Header } from '@/components/Header';
 import { Card } from '@/components/ui/card';
 
 const MapView = dynamic(() => import('@/components/MapView'), {
@@ -34,9 +33,7 @@ export default function MapPage() {
   const cityList = Object.values(allCitiesData).sort((a, b) => b.aqi - a.aqi);
 
   return (
-    <>
-      <Header />
-      <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           <div className="mb-6">
             <h1 className="text-3xl font-bold mb-1">{t.nav.map}</h1>
@@ -126,7 +123,6 @@ export default function MapPage() {
             </Card>
           </div>
         </div>
-      </main>
-    </>
+    </main>
   );
 }

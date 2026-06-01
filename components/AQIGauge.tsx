@@ -9,82 +9,162 @@ interface AQIGaugeProps {
   city: string;
 }
 
+const AQI_LEVELS = [
+  { max: 50,  color: '#22c55e', bg: 'rgba(34,197,94,0.12)',   label: 'Good' },
+  { max: 100, color: '#eab308', bg: 'rgba(234,179,8,0.12)',   label: 'Moderate' },
+  { max: 150, color: '#f97316', bg: 'rgba(249,115,22,0.12)',  label: 'Unhealthy SG' },
+  { max: 200, color: '#ef4444', bg: 'rgba(239,68,68,0.12)',   label: 'Unhealthy' },
+  { max: 300, color: '#a855f7', bg: 'rgba(168,85,247,0.12)',  label: 'Very Unhealthy' },
+  { max: 500, color: '#6d28d9', bg: 'rgba(109,40,217,0.12)',  label: 'Hazardous' },
+];
+
+function getLevel(aqi: number) {
+  return AQI_LEVELS.find(l => aqi <= l.max) ?? AQI_LEVELS[AQI_LEVELS.length - 1];
+}
+
 export function AQIGauge({ aqi, level, city }: AQIGaugeProps) {
   const { t } = useLanguage();
 
-  const gaugeData = useMemo(() => {
-    let color = '#22c55e';
-    if (aqi > 50 && aqi <= 100) color = '#eab308';
-    else if (aqi > 100 && aqi <= 150) color = '#f97316';
-    else if (aqi > 150 && aqi <= 200) color = '#ef4444';
-    else if (aqi > 200 && aqi <= 300) color = '#7c3aed';
-    else if (aqi > 300) color = '#6d28d9';
+  const { color, bg } = useMemo(() => getLevel(aqi), [aqi]);
 
-    const rotation = (Math.min(aqi, 500) / 500) * 180;
-    return { color, rotation };
-  }, [aqi]);
+  const R = 80;
+  const circumference = 2 * Math.PI * R;
+  const progress = Math.min(aqi, 500) / 500;
+  const dashOffset = circumference * (1 - progress);
+
+  const SCALE_LABELS = [
+    { aqi: 0,   angle: -135 },
+    { aqi: 100, angle: -67.5 },
+    { aqi: 200, angle: 0 },
+    { aqi: 300, angle: 67.5 },
+    { aqi: 500, angle: 135 },
+  ];
 
   return (
-    <div className="flex flex-col items-center justify-center py-8">
-      <div className="relative w-64 h-32">
-        <svg
-          viewBox="0 0 200 100"
-          className="w-full h-full"
-          style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }}
-        >
-          <defs>
-            <linearGradient id="aqiGradient" x1="0%" y1="0%" x2="100%">
-              <stop offset="0%" stopColor="#22c55e" />
-              <stop offset="25%" stopColor="#eab308" />
-              <stop offset="50%" stopColor="#f97316" />
-              <stop offset="75%" stopColor="#ef4444" />
-              <stop offset="100%" stopColor="#7c3aed" />
-            </linearGradient>
-          </defs>
+    <div
+      className="relative flex flex-col items-center justify-center py-10 px-6 rounded-2xl overflow-hidden transition-all duration-500"
+      style={{ background: bg }}
+    >
+      {/* Glow blob */}
+      <div
+        className="absolute inset-0 opacity-20 pointer-events-none"
+        style={{
+          background: `radial-gradient(circle at 50% 50%, ${color}, transparent 70%)`,
+        }}
+      />
 
-          <path
-            d="M 20 90 A 70 70 0 0 1 180 90"
+      <div className="relative">
+        <svg width="220" height="220" viewBox="0 0 220 220">
+          {/* Track ring */}
+          <circle
+            cx="110" cy="110" r={R}
             fill="none"
-            stroke="url(#aqiGradient)"
-            strokeWidth="8"
-            strokeLinecap="round"
+            stroke="rgba(255,255,255,0.06)"
+            strokeWidth="14"
           />
 
-          <g transform={`translate(100, 90) rotate(${gaugeData.rotation - 90})`}>
-            <line x1="0" y1="0" x2="0" y2="-60" stroke={gaugeData.color} strokeWidth="3" strokeLinecap="round" />
-            <circle cx="0" cy="0" r="4" fill={gaugeData.color} />
-          </g>
+          {/* Colored segments (background arc) */}
+          {AQI_LEVELS.map((lvl, i) => {
+            const start = i === 0 ? 0 : AQI_LEVELS[i - 1].max / 500;
+            const end = lvl.max / 500;
+            const sOff = circumference * (1 - end);
+            const eOff = circumference * (1 - start);
+            return (
+              <circle
+                key={lvl.label}
+                cx="110" cy="110" r={R}
+                fill="none"
+                stroke={lvl.color}
+                strokeWidth="14"
+                strokeDasharray={`${circumference * (end - start)} ${circumference * (1 - (end - start))}`}
+                strokeDashoffset={sOff}
+                strokeLinecap="butt"
+                opacity="0.18"
+                style={{ transform: 'rotate(-90deg)', transformOrigin: '110px 110px' }}
+              />
+            );
+          })}
 
-          <text x="20" y="105" fontSize="12" textAnchor="middle" fill="currentColor" opacity="0.6">0</text>
-          <text x="100" y="115" fontSize="12" textAnchor="middle" fill="currentColor" opacity="0.6">250</text>
-          <text x="180" y="105" fontSize="12" textAnchor="middle" fill="currentColor" opacity="0.6">500</text>
+          {/* Active progress arc */}
+          <circle
+            cx="110" cy="110" r={R}
+            fill="none"
+            stroke={color}
+            strokeWidth="14"
+            strokeDasharray={circumference}
+            strokeDashoffset={dashOffset}
+            strokeLinecap="round"
+            style={{
+              transform: 'rotate(-90deg)',
+              transformOrigin: '110px 110px',
+              transition: 'stroke-dashoffset 1s ease, stroke 0.5s ease',
+              filter: `drop-shadow(0 0 8px ${color})`,
+            }}
+          />
+
+          {/* Center content */}
+          <text
+            x="110" y="100"
+            textAnchor="middle"
+            fontSize="48"
+            fontWeight="800"
+            fill={color}
+            style={{ fontFamily: 'inherit' }}
+          >
+            {aqi}
+          </text>
+          <text
+            x="110" y="128"
+            textAnchor="middle"
+            fontSize="13"
+            fill="currentColor"
+            opacity="0.5"
+          >
+            AQI
+          </text>
         </svg>
-      </div>
 
-      <div className="text-center mt-6">
-        <div className="text-4xl font-bold text-foreground mb-2">{aqi}</div>
+        {/* Pulse ring animation */}
         <div
-          className="text-lg font-semibold mb-1 px-4 py-1 rounded-full w-fit mx-auto text-white"
-          style={{ backgroundColor: gaugeData.color, opacity: 0.9 }}
-        >
-          {t.levels[level] || level}
-        </div>
-        <div className="text-sm text-muted-foreground mt-3">{city}</div>
+          className="absolute inset-0 rounded-full animate-ping"
+          style={{
+            border: `2px solid ${color}`,
+            opacity: 0.15,
+            animationDuration: '2.5s',
+            margin: 12,
+          }}
+        />
       </div>
 
-      <div className="mt-8 grid grid-cols-3 gap-4 text-xs text-center">
-        <div>
-          <div className="w-3 h-3 rounded-full bg-green-500 mx-auto mb-1"></div>
-          <div className="text-muted-foreground">{t.gauge.good}</div>
-        </div>
-        <div>
-          <div className="w-3 h-3 rounded-full bg-yellow-500 mx-auto mb-1"></div>
-          <div className="text-muted-foreground">{t.gauge.moderate}</div>
-        </div>
-        <div>
-          <div className="w-3 h-3 rounded-full bg-red-500 mx-auto mb-1"></div>
-          <div className="text-muted-foreground">{t.gauge.unhealthy}</div>
-        </div>
+      {/* Level badge */}
+      <div
+        className="mt-2 px-5 py-1.5 rounded-full text-sm font-bold"
+        style={{ background: color, color: '#fff' }}
+      >
+        {t.levels[level] || level}
+      </div>
+
+      <div className="mt-2 text-base font-semibold opacity-70">{city}</div>
+
+      {/* Mini scale */}
+      <div className="mt-6 flex items-center gap-1">
+        {AQI_LEVELS.map((lvl) => (
+          <div key={lvl.label} className="flex flex-col items-center gap-1">
+            <div
+              className="h-1.5 rounded-full"
+              style={{
+                width: 28,
+                background: lvl.color,
+                opacity: aqi <= lvl.max && (AQI_LEVELS.indexOf(lvl) === 0 || aqi > AQI_LEVELS[AQI_LEVELS.indexOf(lvl) - 1].max) ? 1 : 0.3,
+              }}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-4 mt-3 text-xs opacity-40">
+        <span>{t.gauge.good} (0–50)</span>
+        <span>{t.gauge.moderate} (51–100)</span>
+        <span>{t.gauge.unhealthy} (150+)</span>
       </div>
     </div>
   );

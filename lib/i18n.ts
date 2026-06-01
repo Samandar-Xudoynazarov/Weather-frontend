@@ -7,7 +7,25 @@ export type Translations = {
     history: string;
     alerts: string;
     map: string;
-    snake: string;
+    forecast: string;
+  };
+  forecast: {
+    title: string;
+    subtitle: string;
+    loading: string;
+    noData: string;
+    feels: string;
+    rain: string;
+    wind: string;
+    aqi: string;
+    pm25: string;
+    today: string;
+    aqiChart: string;
+    rainChart: string;
+    tempChart: string;
+    low: string;
+    high: string;
+    precipitation: string;
   };
   status: {
     connected: string;
@@ -18,6 +36,7 @@ export type Translations = {
     noData: string;
     refresh: string;
     lastUpdated: string;
+    city: string;
   };
   alerts: {
     title: string;
@@ -67,8 +86,10 @@ export type Translations = {
     title: string;
     temperature: string;
     humidity: string;
+    wind: string;
     windSpeed: string;
     pressure: string;
+    feelsLike: string;
     noData: string;
   };
   chart: {
@@ -87,7 +108,7 @@ export const translations: Record<Language, Translations> = {
       history: 'History',
       alerts: 'Alerts',
       map: 'Map',
-      snake: 'Snake',
+      forecast: 'Forecast',
     },
     status: {
       connected: 'Connected',
@@ -98,6 +119,7 @@ export const translations: Record<Language, Translations> = {
       noData: 'No data available for',
       refresh: 'Refresh',
       lastUpdated: 'Last updated',
+      city: 'City',
     },
     alerts: {
       title: 'Air Quality Alerts',
@@ -152,10 +174,12 @@ export const translations: Record<Language, Translations> = {
     },
     weather: {
       title: 'Weather Conditions',
-      temperature: 'Temperature',
+      temperature: 'Temp',
       humidity: 'Humidity',
+      wind: 'Wind',
       windSpeed: 'Wind Speed',
       pressure: 'Pressure',
+      feelsLike: 'Feels like',
       noData: 'No data',
     },
     chart: {
@@ -163,6 +187,24 @@ export const translations: Record<Language, Translations> = {
       noDataDesc: 'Data will appear as new readings are received',
       title: 'AQI Trend (24 hours)',
       aqi: 'AQI',
+    },
+    forecast: {
+      title: '7-Day Forecast',
+      subtitle: 'Weather & air quality forecast for',
+      loading: 'Loading forecast...',
+      noData: 'Forecast not available',
+      feels: 'Feels like',
+      rain: 'Rain',
+      wind: 'Wind',
+      aqi: 'AQI Forecast',
+      pm25: 'PM2.5 Forecast',
+      today: 'Today',
+      aqiChart: 'AQI (7 days)',
+      rainChart: 'Rain probability (%)',
+      tempChart: 'Temperature (°C)',
+      low: 'Low',
+      high: 'High',
+      precipitation: 'Precipitation',
     },
   },
 
@@ -173,7 +215,7 @@ export const translations: Record<Language, Translations> = {
       history: 'Tarix',
       alerts: "Ogohlantirishlar",
       map: 'Xarita',
-      snake: 'Ilon',
+      forecast: 'Bashorat',
     },
     status: {
       connected: 'Ulangan',
@@ -184,6 +226,7 @@ export const translations: Record<Language, Translations> = {
       noData: "Ma'lumot mavjud emas:",
       refresh: 'Yangilash',
       lastUpdated: 'Oxirgi yangilanish',
+      city: 'Shahar',
     },
     alerts: {
       title: 'Havo sifati ogohlantirishlari',
@@ -240,8 +283,10 @@ export const translations: Record<Language, Translations> = {
       title: 'Ob-havo sharoiti',
       temperature: 'Harorat',
       humidity: 'Namlik',
+      wind: 'Shamol',
       windSpeed: 'Shamol tezligi',
       pressure: 'Bosim',
+      feelsLike: 'Seziladi',
       noData: "Ma'lumot yo'q",
     },
     chart: {
@@ -249,6 +294,24 @@ export const translations: Record<Language, Translations> = {
       noDataDesc: "Yangi o'lchovlar qabul qilinganida ma'lumotlar ko'rinadi",
       title: 'AQI tendensiyasi (24 soat)',
       aqi: 'AQI',
+    },
+    forecast: {
+      title: '7 kunlik bashorat',
+      subtitle: 'Ob-havo va havo sifati bashorati:',
+      loading: 'Bashorat yuklanmoqda...',
+      noData: "Bashorat mavjud emas",
+      feels: 'Seziladi',
+      rain: "Yog'in",
+      wind: 'Shamol',
+      aqi: 'AQI bashorati',
+      pm25: 'PM2.5 bashorati',
+      today: 'Bugun',
+      aqiChart: 'AQI (7 kun)',
+      rainChart: "Yog'in ehtimoli (%)",
+      tempChart: 'Harorat (°C)',
+      low: 'Min',
+      high: 'Maks',
+      precipitation: "Yog'ingarchilik",
     },
   },
 
@@ -259,7 +322,7 @@ export const translations: Record<Language, Translations> = {
       history: 'История',
       alerts: 'Оповещения',
       map: 'Карта',
-      snake: 'Змейка',
+      forecast: 'Прогноз',
     },
     status: {
       connected: 'Подключено',
@@ -270,6 +333,7 @@ export const translations: Record<Language, Translations> = {
       noData: 'Нет данных для',
       refresh: 'Обновить',
       lastUpdated: 'Последнее обновление',
+      city: 'Город',
     },
     alerts: {
       title: 'Оповещения о качестве воздуха',
@@ -324,10 +388,12 @@ export const translations: Record<Language, Translations> = {
     },
     weather: {
       title: 'Погодные условия',
-      temperature: 'Температура',
+      temperature: 'Темп.',
       humidity: 'Влажность',
+      wind: 'Ветер',
       windSpeed: 'Скорость ветра',
       pressure: 'Давление',
+      feelsLike: 'Ощущается',
       noData: 'Нет данных',
     },
     chart: {
@@ -335,6 +401,24 @@ export const translations: Record<Language, Translations> = {
       noDataDesc: 'Данные появятся по мере получения новых показаний',
       title: 'Тренд AQI (24 часа)',
       aqi: 'AQI',
+    },
+    forecast: {
+      title: 'Прогноз на 7 дней',
+      subtitle: 'Прогноз погоды и качества воздуха для',
+      loading: 'Загрузка прогноза...',
+      noData: 'Прогноз недоступен',
+      feels: 'Ощущается',
+      rain: 'Дождь',
+      wind: 'Ветер',
+      aqi: 'Прогноз AQI',
+      pm25: 'Прогноз PM2.5',
+      today: 'Сегодня',
+      aqiChart: 'AQI (7 дней)',
+      rainChart: 'Вероятность осадков (%)',
+      tempChart: 'Температура (°C)',
+      low: 'Мин',
+      high: 'Макс',
+      precipitation: 'Осадки',
     },
   },
 };

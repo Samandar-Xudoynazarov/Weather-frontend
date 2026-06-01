@@ -2,7 +2,6 @@
 
 import { useAirQuality } from '@/context/AirQualityContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { Header } from '@/components/Header';
 import { AQIChart } from '@/components/AQIChart';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -43,9 +42,7 @@ export default function HistoryPage() {
   const tableData = historicalData.slice(0, 24).reverse();
 
   return (
-    <>
-      <Header />
-      <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">{t.history.title}</h1>
@@ -180,7 +177,6 @@ export default function HistoryPage() {
             </div>
           )}
         </div>
-      </main>
-    </>
+    </main>
   );
 }
